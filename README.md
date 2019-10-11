@@ -104,13 +104,13 @@ testImplementation 'com.noahzuch.jcomb:JComb:1.0'
 <!-- USAGE EXAMPLES -->
 ## Getting Started
 ### Basics
-To start creating tests with JComb the class containing the test method has to be annotated with `@ExtendWith(JCombExtension.class)`. Then Parameters can be defined via the `@Parameter` annotation, Constraints via the `@Constraint` annotation and test methods, that should use JComb, via the `@JCombTest` annotation.
+To start creating tests with JComb the class containing the test method has to be annotated with `@ExtendWith(JCombExtension.class)`. Then Parameters can be defined via the `@Parameter` annotation, Constraints via the `@Constraint` annotation and test methods that will use JComb via the `@JCombTest` annotation.
 
 ### Adding Parameters
-The first step for creating a combinatorial test with JComb is to define the necessary parameters. A parameter is simply an annotated field, which type is some subclass of the `Domain` class. The most prominent ways to define a parameter would be to use the `Values` class or the corresponding classes for primitives (e.g. `Ints` or `Doubles`), but creating custom subclasses of `Domain` is also allowed. Each annotation requires a unique index, to later refer to this specific parameter. Parameters can be defined static or nonstatic. A static parameter gets initialized only once for the whole combinatorial test and changes to the value of the parameter (if the parameter is an object) get propagated to the next test execution. A nonstatic parameter, on the other hand, gets reinitialized for every single test execution in the combinatorial test.
+The first step for creating a combinatorial test with JComb is to define the necessary parameters. A parameter is simply an annotated field whose type is a subclass of the `Domain` class. The most prominent ways to define a parameter is using the `Values` class or the corresponding classes for primitives (e.g. `Ints` or `Doubles`), but creating custom subclasses of `Domain` is also allowed. Each annotation requires a unique index, which will be used to refer to this specific parameter. Parameters can be defined static or nonstatic. A static parameter gets initialized only once for the whole combinatorial test and changes to the value of the parameter (if the parameter is an object) get propagated to the next test execution. A nonstatic parameter, on the other hand, gets reinitialized for every single test execution in the combinatorial test.
 
 ### Creating test methods
-To use JComb for a test method the method has to be annotated with `@JCombTest` instead of the normal `@Test` annotation. For every parameter in the combinatorial test, the method has to accept a corresponding input parameter. The order of these parameters has to match the natural order of their indices.
+To use JComb for a test method, the method has to be annotated with `@JCombTest` instead of the normal `@Test` annotation. For every parameter in the combinatorial test, the method has to accept a corresponding input parameter. The order of these parameters has to match the natural order of their indices.
 
 ### Using Constraints
 To exclude some combinations of values from being executed in a test method, constraints are needed. In JComb Constraints are defined via annotated methods. A constraint method checks for a given combination of some parameter values if they should be allowed in the test or not. A simple example of a constraint method could be:
@@ -167,4 +167,4 @@ Distributed under the Apache 2.0 License. See `LICENSE` for more information.
 
 Noah Zuch - noahz97@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/Azuon79/JComb](https://github.com/Azuon79/JComb/)
