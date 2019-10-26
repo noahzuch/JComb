@@ -89,7 +89,7 @@ JComb is available on JCenter. Get it for your Maven or Gradle project:
 ```maven
 <dependency>
     <groupId>com.noahzuch.jcomb</groupId>
-    <artifactId>CombTest</artifactId>
+    <artifactId>JComb</artifactId>
     <version>1.0</version>
     <scope>test</scope>
 </dependency>
