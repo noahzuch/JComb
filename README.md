@@ -49,7 +49,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This extension for <a href="https://github.com/junitteam/junit5">JUnit5</a> allows the definition and execution of combinatorial tests directly in your test class. It works similarly to parameterized testing as one parameterized test method is executed multiple times to achieve combinatorial coverage.
+Combinatorial testing is an effective test case generation technique that is based on the observation that most faults are caused by interactions of only a few (mostly two or three) parameters. A test case with t-wise combinatorial coverage is a set of tests that, for every combination of t parameters all possible discrete combinations of parameter values are covered. *JComb* is an extension for <a href="https://github.com/junitteam/junit5">JUnit5</a> and allows a user to define and execute automated combinatorial tests directly in your test class. It works similarly to parameterized testing as where parameterized test method is executed multiple times to achieve combinatorial coverage.
 
 JComb allows you to:
 * Define parameters directly in your test class
@@ -107,13 +107,13 @@ testImplementation 'com.noahzuch.jcomb:JComb:1.0'
 To start creating tests with JComb the class containing the test method has to be annotated with `@ExtendWith(JCombExtension.class)`. Then Parameters can be defined via the `@Parameter` annotation, Constraints via the `@Constraint` annotation and test methods that will use JComb via the `@JCombTest` annotation.
 
 ### Adding Parameters
-The first step for creating a combinatorial test with JComb is to define the necessary parameters. A parameter is simply an annotated field whose type is a subclass of the `Domain` class. The most prominent ways to define a parameter is using the `Values` class or the corresponding classes for primitives (e.g. `Ints` or `Doubles`), but creating custom subclasses of `Domain` is also allowed. Each annotation requires a unique index, which will be used to refer to this specific parameter. Parameters can be defined static or nonstatic. A static parameter gets initialized only once for the whole combinatorial test and changes to the value of the parameter (if the parameter is an object) get propagated to the next test execution. A nonstatic parameter, on the other hand, gets reinitialized for every single test execution in the combinatorial test.
+The first step for creating a combinatorial test with JComb is to define the necessary parameters. A parameter is simply an annotated field whose type is a subclass of the `Domain` class. The most prominent ways to define a parameter is using the `Values` class or the corresponding classes for primitives (e.g. `Ints` or `Doubles`), but creating custom subclasses of `Domain` is also allowed. Each annotation requires a unique index, which will be used to refer to this specific parameter. Parameters can be defined static or nonstatic. A static parameter gets initialized only once for the whole combinatorial test and changes to the value of the parameter (if the parameter is an object and not a primitive) get propagated to the next test execution. A nonstatic parameter, on the other hand, gets reinitialized for every single test execution in the combinatorial test.
 
 ### Creating test methods
 To use JComb for a test method, the method has to be annotated with `@JCombTest` instead of the normal `@Test` annotation. For every parameter in the combinatorial test, the method has to accept a corresponding input parameter. The order of these parameters has to match the natural order of their indices.
 
 ### Using Constraints
-To exclude some combinations of values from being executed in a test method, constraints are needed. In JComb Constraints are defined via annotated methods. A constraint method checks for a given combination of some parameter values if they should be allowed in the test or not. A simple example of a constraint method could be:
+To exclude some combinations of values from being executed in a test method, constraints are needed. In JComb Constraints are defined via annotated methods. A constraint method checks if a given combination of some parameter values should be allowed in the test or not. A simple example of a constraint method could be:
 ```java
  @Parameter(0)
  private static Ints parameter1 = new Ints(1, 2, 3);
@@ -152,7 +152,7 @@ void test(String param1, int param2){
 }
 ```
 A few things to watch out for:
-* The order of the input parameter for the test method has to match the order of the parameter array in the annotation now and *not* the normal ordering.
+* The order of the input parameter for the test method has to match the order of the parameter array in the annotation now and *not* the normal order.
 * Constraints, where not all the required parameters are included in the parameter list of a test method, are simply ignored. So consider creating multiple small constraints instead of one big one.
 
 <!-- LICENSE -->
