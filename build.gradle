@@ -3,10 +3,15 @@
 plugins {
     id 'java-library'
     id 'eclipse-wtp'
-    id 'maven'
     id 'maven-publish'
-    id "com.jfrog.bintray" version "1.7.3"
+    id "com.jfrog.bintray" version "1.8.4"
     id "com.github.hierynomus.license" version "0.15.0"
+}
+
+eclipse {
+    project {
+        name = 'JComb'
+    }
 }
 
 sourceCompatibility = 1.8
@@ -32,57 +37,88 @@ license{
 	ext.year = '2019'
 	ext.name = 'Noah Zuch'
 	ext.email = 'noahz97@gmail.com'
+	strictCheck true
 }
 
 //Publication
 
-task javadocJar(type: Jar) {
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'  
     from javadoc.destinationDir
-        archiveClassifier = 'javadoc'  
 }
 
-task sourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allJava
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
 }
 
-group = 'com.github.noahzuch'
-version = '1.0'
+artifacts{
+	archives sourcesJar
+	archives javadocJar
+}
 
-publishing {
-    publications {
-        JComb(MavenPublication) {
-        	artifactId="jcomb"
-            from components.java
-            
-            artifact javadocJar
-            artifact sourcesJar
-            
-            pom {
-                name = 'JComb'
-                description = 'An extension for integrating automated combinatorial testing in JUnit'
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'noahz'
-                        name = 'Noah Zuch'
-                        email = 'noahz97@gmail.com'
-                    }
-                }
-            }
+def pomConfig = {
+	
+
+	developers {
+        developer {
+        	id "zuchn"
+            name "Noah Zuch"
+            email "noahz97@gmail.com"
         }
     }
     
-    repositories {
-        maven {
-            name = 'myRepo'
-            url = "file://${buildDir}/repo"
+     scm {
+        url "https://github.com/noahzuch/JComb"
+    }
+}
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+            groupId 'com.github.noahzuch.jcomb'
+            artifactId 'jcomb'
+            version '1.0.0'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', ' A JUnit extension for automated combinatorial testing.')
+                root.appendNode('name', 'JComb')
+                root.appendNode('url', 'https://github.com/noahzuch/JComb')
+                def licenses = root.appendNode('licenses')
+                def license = licenses.appendNode('license')
+                license.appendNode('name', 'The Apache Software License, Version 2.0')
+                license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+                license.appendNode('distribution', 'repo')
+                root.children().last() + pomConfig
+            }
         }
     }
+}
+
+bintray {
+	user = System.getProperty('bintray.user')
+	key = System.getProperty('bintray.key')
+	publications = ['myPublication']
+
+	pkg {
+		repo = 'JComb'
+		name = 'jcomb'
+		licenses = ['Apache-2.0']
+		vcsUrl = 'https://github.com/noahzuch/JComb'
+		version {
+			name = '1.0.0'
+			desc = '1.0.0'
+			released  = new Date()
+		}
+	}
+
 }
 

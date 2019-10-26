@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint;
 
 /**
@@ -25,6 +24,11 @@ package com.github.noahzuch.jcomb.core.constraint;
  */
 public interface ConstraintHandler {
 
+  /**
+   * Checks if a given test is satisfiable under this ConstraintHandler.
+   * @param test The test to check. A value of -1 indicates a wildcard value.
+   * @return Whether or not the supplied test is satisviable.
+   */
   public boolean isSatisfiable(int[] test);
 
   /**

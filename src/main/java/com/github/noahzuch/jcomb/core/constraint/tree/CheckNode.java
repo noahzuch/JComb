@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint.tree;
 
+/**
+ * A Node in a {@link ConstraintTree}
+ * @author Noah
+ *
+ */
 public interface CheckNode {
 
   /**

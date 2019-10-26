@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core;
 
 import java.util.ArrayList;
@@ -66,10 +65,18 @@ public class StandardJCombContext implements JCombContext {
     return 2;
   }
 
+  /**
+   * Sets the constraints for this JCombContext.
+   * @param constraints The constraints as a map with their ids.
+   */
   public void setConstraints(Map<Integer, Constraint> constraints) {
     this.constraints = constraints;
   }
 
+  /**
+   * Returns the constraints of this JCombContext.
+   * @return The constraints of this JCombContext.
+   */
   public Map<Integer, Constraint> getConstraintsMap() {
     return constraints;
   }

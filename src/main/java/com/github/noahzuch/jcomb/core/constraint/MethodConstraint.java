@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +21,13 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import com.github.noahzuch.jcomb.core.JCombException;
 
+/**
+ * A MethodConstraint is an implementation of the {@link Constraint} interface that uses a method as
+ * a constraint.
+ * 
+ * @author Noah
+ *
+ */
 public class MethodConstraint extends AbstractConstraint {
 
   private Method method;

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.annotations;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -37,7 +36,7 @@ import java.lang.annotation.Target;
  * &#64;Parameter(1)
  * private static Values parameter2 = new Values("1", "2", "3");
  * 
- * &#64Constraint(id=0, parameters={0,1})
+ * &#64;Constraint(id=0, parameters={0,1})
  * public static boolean checkNotEqual(int param1, Strint param2){
  *     return param1 != Integer.parseInt(param2);
  * }
@@ -54,7 +53,7 @@ public @interface Constraint {
   /**
    * The id of the constraint.
    * 
-   * @return
+   * @return The id of the constraint.
    */
   int id();
 
@@ -62,7 +61,7 @@ public @interface Constraint {
    * The parameters required for this constraint. The annotated method has to define its parameters
    * in the same order.
    * 
-   * @return
+   * @return The parameters required for this constraint.
    */
   int[] parameters();
 }

@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint;
 
+/**
+ * An interface for a Constraint of a combinatoral test.
+ * @author Noah
+ *
+ */
 public interface Constraint {
 
   /**

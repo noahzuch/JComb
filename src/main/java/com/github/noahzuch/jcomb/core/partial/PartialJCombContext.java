@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.partial;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -44,6 +43,7 @@ public class PartialJCombContext implements JCombContext {
 
   /**
    * Creates a new PartialJCombContext for the given information.
+   * 
    * @param algorithm The new algorithm to use.
    * @param strength The new strength to use.
    * @param parameterMapping The new parameter mapping as an array.
@@ -98,7 +98,9 @@ public class PartialJCombContext implements JCombContext {
       if (constraint != null) {
         Constraint reorderedConstraint = ReorderedConstraint
             .getReorderedConstraintFromPartialContext(constraint, parameterReorder);
-        constraints.put(relevantConstraints[i], reorderedConstraint);
+        if (reorderedConstraint != null) {
+          constraints.put(relevantConstraints[i], reorderedConstraint);
+        }
 
       } else {
         throw new JCombException(

@@ -13,13 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint.tree;
 
+/**
+ * A leaf node in the ConstraintTree
+ * @author Noah
+ *
+ */
 public class LeaveNode implements CheckNode {
 
   private boolean isSatisviable;
 
+  /**
+   * Creates a new LeaveNode with the given boolean value.
+   * @param isSatisviable Whether or not the path to this leaf node is satisfiable or not.
+   */
   public LeaveNode(boolean isSatisviable) {
     this.isSatisviable = isSatisviable;
   }

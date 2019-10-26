@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.parameter;
 
 import com.github.noahzuch.jcomb.core.domain.Domain;
 
+/**
+ * A NestedInputParameter represents an input parameter that is based on another domain.
+ * @author Noah
+ *
+ */
 public abstract class NestedInputParameter extends Domain {
 
   protected Domain parameter;

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.generator.ipog;
 
 import static com.github.noahzuch.jcomb.core.generator.ipog.Tools.binomCoeff;
@@ -102,6 +101,8 @@ class CoverageMap {
    * given test, that covers the most uncovered tupels.
    * 
    * @param test The test to get the best new value for.
+   * @param occTracker The OccurenceTracker to use.
+   * @param constraintHandler The ConstraintHandler to use.
    * @return the best value for the the new parameter.
    */
   public int getBestValueForNewParameter(int[] test, OccurenceTracker occTracker,

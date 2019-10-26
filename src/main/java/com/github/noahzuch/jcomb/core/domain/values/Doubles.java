@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
+/**
+ * A Domain class to create double parameters.
+ * @author Noah
+ *
+ */
 public class Doubles extends Values {
 
+  /**
+   * Creates a new double domain with the given values.
+   * @param values The values of this domain
+   */
   public Doubles(Double... values) {
     super(values);
   }

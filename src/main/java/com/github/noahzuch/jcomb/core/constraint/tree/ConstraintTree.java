@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint.tree;
 
 import java.util.List;
@@ -23,6 +22,13 @@ import com.github.noahzuch.jcomb.core.constraint.Constraint;
 import com.github.noahzuch.jcomb.core.constraint.ConstraintHandler;
 import com.github.noahzuch.jcomb.core.domain.Domain;
 
+/**
+ * An implementation of the {@link ConstraintHandler} interface. Uses a tree structure to check for
+ * constraints.
+ * 
+ * @author Noah
+ *
+ */
 public class ConstraintTree implements ConstraintHandler {
 
   private CheckNode root;

@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
+/**
+ * A Domain class to create byte parameters.
+ * @author Noah
+ *
+ */
 public class Bytes extends Values {
 
+  /**
+   * Creates a new byte domain with the given values.
+   * @param bs The values of this domain.
+   */
   public Bytes(Byte... bs) {
     super(bs);
   }

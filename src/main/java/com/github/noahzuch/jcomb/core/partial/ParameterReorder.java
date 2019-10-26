@@ -13,9 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.partial;
 
+/**
+ * A ParameterReorder saves the reordering and filtering of parameter indices from an existing
+ * mapping to a new one.
+ * 
+ * @author Noah
+ *
+ */
 public class ParameterReorder {
 
   private Integer[] mappingOldToNewIndizes;
@@ -23,6 +29,7 @@ public class ParameterReorder {
 
   /**
    * Creates a new ParameterReorder object for the given mappings.
+   * 
    * @param mappingNewToOldIndizes A mapping of the new parameter indices to the old ones.
    * @param oldParamterCount The total number of old parameters.
    */
@@ -40,20 +47,36 @@ public class ParameterReorder {
     }
   }
 
+  /**
+   * Checks if the given index is used as a new parameter index in this reorder.
+   * @param newIndex The index to check.
+   * @return Whether or not the index is a new parameter index.
+   */
   public boolean isLegalNewParam(int newIndex) {
     return newIndex >= 0 && newIndex < mappingNewToOldIndizes.length;
   }
 
+  /**
+   * Checks if the given index is used as am old parameter index in this reorder.
+   * @param oldIndex The index to check.
+   * @return Whether or not the index is an old parameter index.
+   */
   public boolean isLegalOldParam(int oldIndex) {
     return oldIndex >= 0 && oldIndex < mappingOldToNewIndizes.length;
   }
 
+  /**
+   * Checks if this ParameterReorder contains a reoder for the given old paramter index.
+   * @param oldIndex The old index to check.
+   * @return Whether or not the old index is reordered by this ParameterReorder.
+   */
   public boolean containsReorderForOldParam(int oldIndex) {
     return isLegalOldParam(oldIndex) && mappingOldToNewIndizes[oldIndex] != null;
   }
 
   /**
    * Converts an old parameter index to its new index.
+   * 
    * @param oldIndex The old parameter index to convert.
    * @return The new parameter index.
    */
@@ -67,6 +90,7 @@ public class ParameterReorder {
 
   /**
    * Converts a new parameter index to its old index.
+   * 
    * @param newIndex The new parameter index to convert.
    * @return The old index of the parameter.
    */
@@ -78,6 +102,10 @@ public class ParameterReorder {
     return mappingNewToOldIndizes[newIndex];
   }
 
+  /**
+   * Returns the number of reorders in this ParameterReorder.
+   * @return The number of reorders in this ParameterReorder
+   */
   public int getReorderedParameterCount() {
     return mappingNewToOldIndizes.length;
   }

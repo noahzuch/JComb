@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.oa.finitefield;
 
+/**
+ * An implementation of the {@link FiniteField} interface that uses saved field tables.
+ * @author Noah
+ *
+ */
 public class SavedFiniteField implements FiniteField {
 
   private static final FiniteFieldTable[] finiteFields = new FiniteFieldTable[] {

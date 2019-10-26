@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.constraint;
 
+/**
+ * An Abstract class implementing the {@link Constraint} interface. It implements the
+ * {@link Constraint#getInvolvedParameters()} method via an array that has to be supplied in the
+ * constructor.
+ * 
+ * @author Noah
+ *
+ */
 public abstract class AbstractConstraint implements Constraint {
 
   private int[] involvedParameters;
 
+  /**
+   * Creates a new AbstractConstraint.
+   * 
+   * @param involvedParameters The indices of the involved parameters of this constraint. Should be
+   *        supplied by the extending class.
+   */
   public AbstractConstraint(int[] involvedParameters) {
     this.involvedParameters = involvedParameters;
   }

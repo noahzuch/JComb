@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.generator.ipog;
 
 import java.util.Arrays;
@@ -27,6 +26,11 @@ import com.github.noahzuch.jcomb.core.JCombException;
 import com.github.noahzuch.jcomb.core.constraint.ConstraintHandler;
 import com.github.noahzuch.jcomb.core.generator.TestGenerator;
 
+/**
+ * A TestGenerator implementation that uses the IPOG strategy.
+ * @author Noah
+ *
+ */
 public class IpogTestGenerator implements TestGenerator {
 
   private int[] domainSizes;
