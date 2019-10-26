@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.Test;
 import com.github.noahzuch.jcomb.annotations.Constraint;
 import com.github.noahzuch.jcomb.annotations.Parameter;
+import com.github.noahzuch.jcomb.core.JComb;
 import com.github.noahzuch.jcomb.core.JCombException;
 import com.github.noahzuch.jcomb.core.domain.Domain;
 import com.github.noahzuch.jcomb.core.domain.values.Ints;
@@ -61,7 +62,7 @@ public class SystemFailureTest extends BaseSystemTest {
     } catch (JCombException e) {
       assertJCombExceptionMessage(
           "Constraint method check does not have the static modifier. Constraints"
-          + " have to be static.",
+              + " have to be static.",
           e);
     }
   }
@@ -79,29 +80,24 @@ public class SystemFailureTest extends BaseSystemTest {
     }
   }
 
+  /**
+   * Update from old behaviou. Previously unreorderable constraints should cause an exception. Now
+   * these constraints are ignored for this test method
+   * 
+   * @throws JCombException
+   */
   @Test
-  void testNonExistingParamConstraint() {
+  void testNonExistingParamConstraint() throws JCombException {
     // Parameter does not exist in testclass
-    try {
-      createjCombObject(Algorithm.ANY, new int[] {0}, new int[] {0, 1}, 2,
+    JComb jcomb =  createjCombObject(Algorithm.ANY, new int[] {0}, new int[] {0, 1}, 2,
           NonExistingParamConstrFailure.class);
-      fail();
-    } catch (JCombException e) {
-      assertJCombExceptionMessage(
-          "A defined Constraint requires the parameter with id '3', but the"
-          + " testmethod does not include this parameter.",
-          e);
-    }
+    
+    assertEquals(0, jcomb.getContext().getConstraints().size());
+    
     // parameter is excluded in testmethod
-    try {
-      createjCombObject(Algorithm.ANY, new int[] {0}, new int[] {0, 2}, 2, ParamConstrBase.class);
-      fail();
-    } catch (JCombException e) {
-      assertJCombExceptionMessage(
-          "A defined Constraint requires the parameter with id '1', but the"
-          + " testmethod does not include this parameter.",
-          e);
-    }
+    jcomb =  createjCombObject(Algorithm.ANY, new int[] {0}, new int[] {0, 2}, 2, ParamConstrBase.class);
+    assertEquals(0, jcomb.getContext().getConstraints().size());
+
   }
 
   @Test
@@ -112,7 +108,7 @@ public class SystemFailureTest extends BaseSystemTest {
     } catch (JCombException e) {
       assertJCombExceptionMessage(
           "The testmethod requires a parameter with id '3', but no Parameter"
-          + " with such an id is defined",
+              + " with such an id is defined",
           e);
     }
 
@@ -122,7 +118,7 @@ public class SystemFailureTest extends BaseSystemTest {
     } catch (JCombException e) {
       assertJCombExceptionMessage(
           "The testmethod requires a constraint with id '1', but no Constraint"
-          + " with such an id is defined",
+              + " with such an id is defined",
           e);
     }
   }
@@ -135,7 +131,7 @@ public class SystemFailureTest extends BaseSystemTest {
     } catch (JCombException e) {
       assertJCombExceptionMessage(
           "The parameter '0' is used twice for the testmethod. As of now defining"
-          + " a parameter twice in a method is not allowed.",
+              + " a parameter twice in a method is not allowed.",
           e);
     }
   }

@@ -29,12 +29,15 @@ public class ReorderedConstraint implements Constraint {
   }
 
   /**
-   * Creates a ReorderedConstraint object from a given constraint and a {@link ParameterReorder}
-   * object.
+   * Creates (if possible) a ReorderedConstraint object from a given constraint and a
+   * {@link ParameterReorder} object. If not all the neccesary parameters for the constraint are
+   * included in the ParameterReorder, no ReorderedConstraint ca be created and null is returned
+   * instead.
    * 
    * @param standard The constraint to base the new ReorderedConstraint on.
    * @param parameterReorder The {@link ParameterReorder} to use for the reordering.
-   * @return A ReorderedConstraint based on the original constraint.
+   * @return A ReorderedConstraint based on the original constraint or null if the constraint could
+   *         not be reordered.
    */
   public static ReorderedConstraint getReorderedConstraintFromPartialContext(Constraint standard,
       ParameterReorder parameterReorder) {
@@ -45,8 +48,7 @@ public class ReorderedConstraint implements Constraint {
       if (parameterReorder.containsReorderForOldParam(oldParam)) {
         reorderedParameters[i] = parameterReorder.getNewParamIndexFromOld(oldParam);
       } else {
-        throw new JCombException("A defined Constraint requires the parameter with id '" + oldParam
-            + "', but the testmethod does not include this parameter.");
+        return null;
       }
     }
     return new ReorderedConstraint(standard, reorderedParameters);
