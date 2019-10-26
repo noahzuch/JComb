@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>MethodConstraint.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testSingleAdd (29.05.2019 13:08:27)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.constraint</a> &gt; <span class="el_source">MethodConstraint.java</span></div><h1>MethodConstraint.java</h1><pre class="source lang-java linenums">package jcomb.core.constraint;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import jcomb.core.JCombException;
+
+public class MethodConstraint extends AbstractConstraint {
+
+  private Method method;
+
+
+
+  public MethodConstraint(int[] involvedParameters, Method method) {
+<span class="nc" id="L15">    super(involvedParameters);</span>
+<span class="nc bnc" id="L16" title="All 2 branches missed.">    if (!Modifier.isStatic(method.getModifiers())) {</span>
+<span class="nc" id="L17">      throw new JCombException(&quot;Constraint method &quot; + method.getName()</span>
+<span class="nc" id="L18">          + &quot; does not have the static modifier. Constraints have to be static.&quot;);</span>
+    }
+<span class="nc" id="L20">    this.method = method;</span>
+<span class="nc" id="L21">    method.setAccessible(true);</span>
+<span class="nc" id="L22">  }</span>
+
+
+
+  @Override
+  public boolean confirmsWith(Object[] inputKombination) {
+    try {
+<span class="nc" id="L29">      return (Boolean) method.invoke(null, inputKombination);</span>
+<span class="nc" id="L30">    } catch (IllegalAccessException e) {</span>
+<span class="nc" id="L31">      throw new JCombException(&quot;Can't access constraint method &quot; + method.getName() + &quot;.&quot;, e);</span>
+<span class="nc" id="L32">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L33">      throw new JCombException(&quot;Constraint method '&quot; + method.getName()</span>
+<span class="nc" id="L34">          + &quot;' defines different parameter types in his annotation than in the actual method&quot;, e);</span>
+<span class="nc" id="L35">    } catch (InvocationTargetException e) {</span>
+<span class="nc" id="L36">      throw new JCombException(</span>
+<span class="nc" id="L37">          &quot;constraint method&quot; + method.getName() + &quot;threw an exception.&quot;, e);</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testSingleAdd (29.05.2019 13:08:27)</div></body></html>

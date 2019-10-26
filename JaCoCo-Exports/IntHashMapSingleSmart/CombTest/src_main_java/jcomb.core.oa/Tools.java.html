@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Tools.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testSingleAdd (29.05.2019 13:08:27)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.oa</a> &gt; <span class="el_source">Tools.java</span></div><h1>Tools.java</h1><pre class="source lang-java linenums">package jcomb.core.oa;
+
+import java.util.ArrayList;
+import java.util.List;
+import jcomb.core.oa.finitefield.FiniteField;
+import jcomb.core.oa.finitefield.PrimeField;
+import jcomb.core.oa.finitefield.SavedFiniteField;
+
+/**
+ * A utility class for orthogonal arrays.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class Tools {
+
+  private Tools() {
+
+  }
+
+
+
+  /**
+   * Checks if a given number is a prime number.
+   * 
+   * @param n the number to check.
+   * @return True if the given nubmer is prime, false otherwise
+   */
+  public static boolean isPrime(int n) {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">    if (n &lt; 2)</span>
+<span class="nc" id="L31">      return false;</span>
+<span class="nc bnc" id="L32" title="All 4 branches missed.">    if (n == 2 || n == 3)</span>
+<span class="nc" id="L33">      return true;</span>
+<span class="nc bnc" id="L34" title="All 4 branches missed.">    if (n % 2 == 0 || n % 3 == 0)</span>
+<span class="nc" id="L35">      return false;</span>
+<span class="nc" id="L36">    int sqrtN = (int) Math.sqrt(n) + 1;</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">    for (int i = 6; i &lt;= sqrtN; i += 6) {</span>
+<span class="nc bnc" id="L38" title="All 4 branches missed.">      if (n % (i - 1) == 0 || n % (i + 1) == 0)</span>
+<span class="nc" id="L39">        return false;</span>
+    }
+<span class="nc" id="L41">    return true;</span>
+  }
+
+
+
+  /**
+   * Attempts to decompose the supplied number into a prime p and a power t so that:
+   * p^t = n.
+   * 
+   * @param n The number to decompose.
+   * @return An int array of length two with the first value being p and the second one being t.
+   * returns null if the decomposition is not possible, or in other words n is not a prime
+   * power.
+   */
+  public static int[] getPrimePowerDecomp(int n) {
+    // TODO make better
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    if (isPrime(n)) {</span>
+<span class="nc" id="L58">      return null;</span>
+    }
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    for (int possibleprime = 2; possibleprime &lt;= n / 2; possibleprime++) {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">      if (isPrime(possibleprime)) {</span>
+<span class="nc" id="L62">        double exp = Math.log(n) / Math.log(possibleprime);</span>
+<span class="nc" id="L63">        int expInt = (int) Math.round(exp);</span>
+<span class="nc" id="L64">        double diff = expInt - exp;</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (Math.abs(diff) &lt; 2 * 10e-15) {</span>
+<span class="nc" id="L66">          return new int[] {possibleprime, expInt};</span>
+        }
+      }
+    }
+<span class="nc" id="L70">    return null;</span>
+  }
+
+
+
+  public static List&lt;FiniteField&gt; getFiniteFieldsViaPrimeFactors(int n) {
+<span class="nc" id="L76">    List&lt;FiniteField&gt; factors = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">    for (int i = 2; i &lt;= n / i; i++) {</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">      if (n % i == 0) {</span>
+<span class="nc" id="L79">        int prime = i;</span>
+<span class="nc" id="L80">        int primePower = 1;</span>
+<span class="nc" id="L81">        int power = 0;</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        while (n % i == 0) {</span>
+<span class="nc" id="L83">          power++;</span>
+<span class="nc" id="L84">          primePower *= prime;</span>
+<span class="nc" id="L85">          n /= i;</span>
+        }
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (power == 1) {</span>
+<span class="nc" id="L88">          factors.add(new PrimeField(prime));</span>
+<span class="nc" id="L89">        } else {</span>
+<span class="nc" id="L90">          factors.add(SavedFiniteField.getSavedFiniteField(primePower));</span>
+        }
+      }
+    }
+<span class="nc bnc" id="L94" title="All 2 branches missed.">    if (n &gt; 1) {</span>
+<span class="nc" id="L95">      factors.add(new PrimeField(n));</span>
+    }
+<span class="nc" id="L97">    return factors;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testSingleAdd (29.05.2019 13:08:27)</div></body></html>

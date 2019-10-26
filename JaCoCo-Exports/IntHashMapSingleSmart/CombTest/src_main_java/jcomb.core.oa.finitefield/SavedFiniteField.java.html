@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SavedFiniteField.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testSingleAdd (29.05.2019 13:08:27)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.oa.finitefield</a> &gt; <span class="el_source">SavedFiniteField.java</span></div><h1>SavedFiniteField.java</h1><pre class="source lang-java linenums">package jcomb.core.oa.finitefield;
+
+public class SavedFiniteField implements FiniteField {
+
+<span class="nc" id="L5">  private static final FiniteFieldTable[] finiteFields = new FiniteFieldTable[] {</span>
+
+<span class="nc" id="L7">      new FiniteFieldTable(4, new int[][] {{0, 1, 2, 3},</span>
+<span class="nc" id="L8">                                           {1, 0, 3, 2},</span>
+<span class="nc" id="L9">                                           {2, 3, 0, 1},</span>
+<span class="nc" id="L10">                                           {3, 2, 1, 0}},</span>
+<span class="nc" id="L11">          new int[][] {{0, 0, 0, 0},</span>
+<span class="nc" id="L12">                       {0, 1, 2, 3},</span>
+<span class="nc" id="L13">                       {0, 2, 3, 1},</span>
+<span class="nc" id="L14">                       {0, 3, 1, 2}}),</span>
+<span class="nc" id="L15">      new FiniteFieldTable(8,</span>
+<span class="nc" id="L16">          new int[][] {{0, 1, 2, 3, 4, 5, 6, 7}, {1, 0, 3, 2, 5, 4, 7, 6}, {2, 3, 0, 1, 6, 7, 4, 5},</span>
+<span class="nc" id="L17">              {3, 2, 1, 0, 7, 6, 5, 4}, {4, 5, 6, 7, 0, 1, 2, 3}, {5, 4, 7, 6, 1, 0, 3, 2},</span>
+<span class="nc" id="L18">              {6, 7, 4, 5, 2, 3, 0, 1}, {7, 6, 5, 4, 3, 2, 1, 0}},</span>
+<span class="nc" id="L19">          new int[][] {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 2, 3, 4, 5, 6, 7}, {0, 2, 4, 6, 3, 1, 7, 5},</span>
+<span class="nc" id="L20">              {0, 3, 6, 5, 7, 4, 1, 2}, {0, 4, 3, 7, 6, 2, 5, 1}, {0, 5, 1, 4, 2, 7, 3, 6},</span>
+<span class="nc" id="L21">              {0, 6, 7, 1, 5, 3, 2, 4}, {0, 7, 5, 2, 1, 6, 4, 3}})};</span>
+
+  private FiniteFieldTable table;
+
+<span class="nc" id="L25">  private SavedFiniteField(FiniteFieldTable table) {</span>
+<span class="nc" id="L26">    this.table=table;</span>
+<span class="nc" id="L27">  }</span>
+  
+  public static FiniteField getSavedFiniteField(int size) {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">    for (FiniteFieldTable table : finiteFields) {</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">      if (table.size == size) {</span>
+<span class="nc" id="L32">        return new SavedFiniteField(table);</span>
+      }
+    }
+<span class="nc" id="L35">    throw new IllegalArgumentException(&quot;No FiniteField found for given size: &quot;+size);</span>
+  }
+
+  @Override
+  public int add(int a, int b) {
+<span class="nc" id="L40">    return table.additionTable[a][b];</span>
+  }
+
+  @Override
+  public int subtract(int a, int b) {
+<span class="nc" id="L45">    return table.additionTable[a][addInvers(b)];</span>
+  }
+
+  @Override
+  public int multiply(int a, int b) {
+<span class="nc" id="L50">    return table.multiplicationTable[a][b];</span>
+  }
+
+  @Override
+  public int divide(int a, int b) {
+<span class="nc" id="L55">    return table.multiplicationTable[a][multInvers(b)];</span>
+
+  }
+
+  @Override
+  public int addInvers(int a) {
+<span class="nc" id="L61">    return a;</span>
+  }
+
+  @Override
+  public int multInvers(int b) {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">    if (b == 0)</span>
+<span class="nc" id="L67">      throw new ArithmeticException(&quot;No multiplicative invers exists for zero&quot;);</span>
+
+<span class="nc" id="L69">    int[] multA = table.multiplicationTable[b];</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">    for (int i = 0; i &lt; multA.length; i++) {</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">      if (multA[i] == 1) {</span>
+<span class="nc" id="L72">        return i;</span>
+      }
+    }
+
+<span class="nc" id="L76">    throw new ArithmeticException(&quot;No multiplicative invers found for number &quot; + b);</span>
+  }
+  
+
+  @Override
+  public int size() {
+<span class="nc" id="L82">    return table.size;</span>
+  }
+
+
+  private static class FiniteFieldTable {
+    private int size;
+
+    private int[][] additionTable;
+
+    private int[][] multiplicationTable;
+
+<span class="nc" id="L93">    public FiniteFieldTable(int size, int[][] additionTable, int[][] multiplicationTable) {</span>
+<span class="nc" id="L94">      this.size = size;</span>
+<span class="nc" id="L95">      this.additionTable = additionTable;</span>
+<span class="nc" id="L96">      this.multiplicationTable = multiplicationTable;</span>
+<span class="nc" id="L97">    }</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testSingleAdd (29.05.2019 13:08:27)</div></body></html>

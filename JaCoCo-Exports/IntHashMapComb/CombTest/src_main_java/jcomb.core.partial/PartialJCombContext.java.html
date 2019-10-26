@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PartialJCombContext.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.partial</a> &gt; <span class="el_source">PartialJCombContext.java</span></div><h1>PartialJCombContext.java</h1><pre class="source lang-java linenums">package jcomb.core.partial;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import jcomb.core.JCombContext;
+import jcomb.core.JCombException;
+import jcomb.core.constraint.Constraint;
+import jcomb.core.parameter.Domain;
+
+/**
+ * This class can be used if for a given test method not the whole {@link JCombContext} of the
+ * test class should be used. This class then wraps the existing {@link JCombContext} object and
+ * makes only specific parameters, constraints and seeds visible.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class PartialJCombContext implements JCombContext {
+
+  private JCombContext context;
+  // private int[] parameterMappingToOriginal;
+  // private Integer[] parameterMappingFromOriginal;
+  private ParameterReorder parameterReorder;
+  private Map&lt;Integer, Constraint&gt; constraints;
+
+
+
+<span class="fc" id="L33">  public PartialJCombContext(int[] parameterMapping, int[] relevantConstrIndizes,</span>
+      JCombContext context) {
+<span class="fc" id="L35">    this.context = context;</span>
+<span class="fc" id="L36">    checkParameterMapping(parameterMapping);</span>
+<span class="fc" id="L37">    parameterReorder = new ParameterReorder(parameterMapping, context.getParameterCount());</span>
+    // setupParameterMapping(parameterMapping);
+<span class="fc" id="L39">    checkAndSetupConstraints(relevantConstrIndizes);</span>
+
+<span class="fc" id="L41">  }</span>
+
+
+
+  private void checkParameterMapping(int[] parameterMapping) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">    for (int i = 0; i &lt; parameterMapping.length; i++) {</span>
+<span class="fc" id="L47">      int mapping = parameterMapping[i];</span>
+<span class="pc bpc" id="L48" title="2 of 4 branches missed.">      if (mapping &lt; 0 || mapping &gt;= context.getParameterCount()) {</span>
+<span class="nc" id="L49">        throw new JCombException(&quot;The testmethod requires a parameter with id '&quot; + mapping</span>
+<span class="nc" id="L50">            + &quot;', but no Parameter with such an id is defined&quot;);</span>
+      }
+<span class="fc bfc" id="L52" title="All 2 branches covered.">      for (int j = 0; j &lt; parameterMapping.length; j++) {</span>
+<span class="pc bpc" id="L53" title="1 of 4 branches missed.">        if(j!=i &amp;&amp; parameterMapping[j]==mapping) {</span>
+<span class="nc" id="L54">          throw new JCombException(&quot;As of now defining a parameter twice in a method is not allowed.&quot;);</span>
+        }
+      }
+    }
+<span class="fc" id="L58">  }</span>
+
+
+  // private void setupParameterMapping(int[] parameterMapping) {
+  // this.parameterMappingToOriginal = parameterMapping;
+  // parameterMappingFromOriginal = new Integer[context.getParameterCount()];
+  // for (int i = 0; i &lt; parameterMappingToOriginal.length; i++) {
+  // parameterMappingFromOriginal[parameterMappingToOriginal[i]] = i;
+  // }
+  // }
+
+
+
+  private void checkAndSetupConstraints(int[] relevantConstraints) {
+<span class="fc" id="L72">    constraints = new HashMap&lt;&gt;();</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    for (int i = 0; i &lt; relevantConstraints.length; i++) {</span>
+<span class="nc" id="L74">      Constraint constraint = context.getConstraints().get(relevantConstraints[i]);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">      if (constraint != null) {</span>
+<span class="nc" id="L76">        Constraint reorderedConstraint = ReorderedConstraint</span>
+<span class="nc" id="L77">            .getReorderedConstraintFromPartialContext(constraint, parameterReorder);</span>
+<span class="nc" id="L78">        constraints.put(relevantConstraints[i], reorderedConstraint);</span>
+
+<span class="nc" id="L80">      } else {</span>
+<span class="nc" id="L81">        throw new JCombException(</span>
+<span class="nc" id="L82">            &quot;The testmethod requires a constraint with id '&quot; + i</span>
+<span class="nc" id="L83">                + &quot;', but no Constraint with such an id is defined&quot;);</span>
+      }
+    }
+<span class="fc" id="L86">  }</span>
+
+
+
+  @Override
+  public void initializeForInstance(Object currentTestInstance) {
+<span class="fc" id="L92">    context.initializeForInstance(currentTestInstance);</span>
+<span class="fc" id="L93">  }</span>
+
+
+
+  @Override
+  public Domain getParameter(int index) {
+<span class="fc" id="L99">    checkIndex(index);</span>
+<span class="fc" id="L100">    return context.getParameter(parameterReorder.getOldParamIndexFromNew(index));</span>
+  }
+
+
+
+  @Override
+  public int getParameterCount() {
+<span class="fc" id="L107">    return parameterReorder.getReorderedParameterCount();</span>
+  }
+
+
+
+  // @Override
+  // public int resolveParameterIndex(int parameterIndex) {
+  // checkIndex(parameterIndex);
+  // return parameterReorder.getOldParamIndexFromNew(parameterIndex);
+  //
+  // }
+
+
+
+  private void checkIndex(int index) {
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">    if (!parameterReorder.isLegalNewParam(index)) {</span>
+<span class="nc" id="L123">      throw new IllegalArgumentException(</span>
+<span class="nc" id="L124">          &quot;supplied index is not in the range specific by the applicable parameters for this test.&quot;);</span>
+    }
+<span class="fc" id="L126">  }</span>
+
+
+
+  @Override
+  public Collection&lt;int[]&gt; getSeeds() {
+    // TODO Auto-generated method stub
+<span class="nc" id="L133">    return null;</span>
+  }
+
+
+
+  @Override
+  public Map&lt;Integer, Constraint&gt; getConstraints() {
+<span class="fc" id="L140">    return constraints;</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

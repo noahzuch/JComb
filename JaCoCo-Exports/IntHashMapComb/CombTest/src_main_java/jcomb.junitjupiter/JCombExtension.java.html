@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>JCombExtension.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.junitjupiter</a> &gt; <span class="el_source">JCombExtension.java</span></div><h1>JCombExtension.java</h1><pre class="source lang-java linenums">package jcomb.junitjupiter;
+
+import static org.junit.platform.commons.support.AnnotationSupport.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
+import com.google.common.collect.Streams;
+import jcomb.annotations.AnnotationHandler;
+import jcomb.annotations.CombinationTest;
+import jcomb.annotations.Parameter;
+import jcomb.core.JCombContext;
+import jcomb.core.JCombCore;
+import jcomb.core.JCombException;
+import jcomb.core.TestInputGenerator;
+import jcomb.core.oa.OrthogonalArrayGenerator;
+import jcomb.core.parameter.Values;
+import jcomb.core.partial.PartialJCombContext;
+
+/**
+ * The JUnit Extension needed, that a test-class is using the JComb test instantiation
+ * via Combinatorial Testing.
+ * Example of a testclass using JComb:
+ * 
+ * &lt;pre&gt;
+ * {@code
+ * &amp;#64;ExtendWith(CombinationExtension.class)
+ * class CombTest {
+ * 
+ *   &amp;#64;Parameter(0)
+ *   Values parameter1 = new Values(&quot;Hello&quot;, &quot;how&quot;, &quot;are&quot;);
+ * 
+ *   &amp;#64;Parameter(1)
+ *   Values parameter2 = new Values(5, 3, 2);
+ * 
+ *   &amp;#64;Parameter(2)
+ *   Values parameter3 = new Values(&quot;Hello&quot;, 5, 7);
+ * 
+ *   &amp;#64;Parameter(3)
+ *   Values getParameter3() {
+ *     return new Values(3.56d, 2.572d, 91234d);
+ * }
+ * 
+ * &amp;#64;CombinationTest()
+ * void test(String a, int b, Object vector, Double dd) {
+ * ...
+ * }
+ * }
+ * }
+ * &lt;\pre&gt;
+ * 
+ * 
+ * See the javadoc for {@link Parameter} and {@link CombinationTest} for more
+ * details about each annotation.
+ * 
+ * @author Noah Zuch
+ *
+ */
+<span class="fc" id="L65">public class JCombExtension implements TestTemplateInvocationContextProvider {</span>
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean supportsTestTemplate(ExtensionContext context) {
+<span class="fc" id="L72">    return isAnnotated(context.getElement(), CombinationTest.class);</span>
+  }
+
+
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Stream&lt;TestTemplateInvocationContext&gt; provideTestTemplateInvocationContexts(
+      final ExtensionContext context) {
+<span class="fc" id="L83">    CombinationTest annotation = findAnnotation(context.getElement(), CombinationTest.class).get();</span>
+<span class="fc" id="L84">    Class&lt;?&gt; testClass = context.getRequiredTestClass();</span>
+<span class="fc" id="L85">    Object testClassInstance = getTestClassInstance(testClass);</span>
+    
+<span class="fc" id="L87">    AnnotationHandler annotationHandler = new AnnotationHandler(testClass);</span>
+<span class="fc" id="L88">    JCombContext jCombContext = annotationHandler.scan(testClassInstance);</span>
+    
+<span class="fc" id="L90">    int[] parameterindizes = getParameterIndizes(annotation, jCombContext);</span>
+<span class="fc" id="L91">    int[] relevantConstraints = getRelevantConstraints(annotation, jCombContext);</span>
+<span class="fc" id="L92">    jCombContext = new PartialJCombContext(parameterindizes, relevantConstraints, jCombContext);</span>
+
+//    int methodParameterCount = context.getRequiredTestMethod().getParameterCount();
+//    if (methodParameterCount != jCombContext.getParameterCount()) {
+//      throw new JCombException(&quot;Testmethod has &quot; + methodParameterCount + &quot; parameters but only &quot;
+//          + jCombContext.getParameterCount() + &quot; parameter(s) is/are defined in the annotation.&quot;);
+//    }
+
+<span class="fc" id="L100">    return generateInvocationContext(context, jCombContext, annotation);</span>
+  }
+
+
+
+  private int[] getParameterIndizes(CombinationTest annotation, JCombContext jCombContext) {
+<span class="fc" id="L106">    int[] parameterIndizes = annotation.parameters();</span>
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">    if (parameterIndizes == null || parameterIndizes.length == 0) {</span>
+<span class="fc" id="L108">      parameterIndizes = IntStream.range(0,jCombContext.getParameterCount()).toArray();</span>
+    }
+<span class="fc" id="L110">    return parameterIndizes;</span>
+  }
+  
+  private int[] getRelevantConstraints(CombinationTest annotation, JCombContext jCombContext) {
+<span class="fc" id="L114">    int[] relevantConstraints = annotation.constraints();</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    if (!annotation.ignoreConstraints()) {</span>
+<span class="pc bpc" id="L116" title="2 of 4 branches missed.">      if (relevantConstraints == null || relevantConstraints.length == 0) {</span>
+<span class="fc" id="L117">        relevantConstraints = IntStream.range(0,jCombContext.getConstraints().size()).toArray();</span>
+      }
+<span class="fc" id="L119">    } else {</span>
+<span class="nc" id="L120">      relevantConstraints = new int[0];</span>
+    }
+<span class="fc" id="L122">    return relevantConstraints;</span>
+  }
+
+
+
+  /**
+   * Creates the {@link Stream} of {@link TestTemplateInvocationContext} which is used by junit for
+   * test instantiation.
+   * 
+   * @param context The {@link ExtensionContext} of the current test.
+   * @param jCombContext The {@link JCombContext} of the current test.
+   * @param annotation The {@link CombinationTest} annotation of the current test.
+   * @return a {@link Stream} of {@link TestTemplateInvocationContext} representing the test to
+   * instantiate
+   */
+  private Stream&lt;TestTemplateInvocationContext&gt; generateInvocationContext(ExtensionContext context,
+      JCombContext jCombContext, CombinationTest annotation) {
+<span class="fc" id="L139">    TestInputGenerator generator = JCombCore.createGenerator(annotation.algorithm(), jCombContext);</span>
+
+<span class="fc" id="L141">    return generator.getAllInputCombinations().map(obj -&gt; new JCombExtensionContext(context,</span>
+<span class="fc" id="L142">        jCombContext, new InputCombination(jCombContext, obj)));</span>
+  }
+
+
+
+  /**
+   * Instantiates the current test class.
+   * 
+   * @param testClass The test class to instantiate.
+   * @return an object of the supplied type.
+   */
+  private Object getTestClassInstance(Class&lt;?&gt; testClass) {
+    // TODO Extend to non empty constructors. Use Junit initializsation somehow
+    try {
+<span class="fc" id="L156">      Constructor&lt;?&gt; con = testClass.getDeclaredConstructor();</span>
+<span class="fc" id="L157">      con.setAccessible(true);</span>
+<span class="fc" id="L158">      return con.newInstance();</span>
+<span class="nc" id="L159">    } catch (IllegalAccessException e) {</span>
+<span class="nc" id="L160">      throw new JCombException(</span>
+<span class="nc" id="L161">          &quot;For Jcomb to work, the test class has to have an  accessable empty constructor&quot;);</span>
+<span class="nc" id="L162">    } catch (InstantiationException e) {</span>
+<span class="nc" id="L163">      throw new Error(&quot;Test class from Junit is not instantiatable&quot;);</span>
+<span class="nc" id="L164">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L165">      throw new JCombException(</span>
+<span class="nc" id="L166">          &quot;For Jcomb to work, the test class has to have an accessable empty constructor&quot;);</span>
+<span class="nc" id="L167">    } catch (InvocationTargetException e) {</span>
+<span class="nc" id="L168">      throw new RuntimeException(e);</span>
+<span class="nc" id="L169">    } catch (NoSuchMethodException e) {</span>
+<span class="nc" id="L170">      throw new JCombException(</span>
+<span class="nc" id="L171">          &quot;For Jcomb to work, the test class has to have an accessable empty constructor&quot;);</span>
+<span class="nc" id="L172">    } catch (SecurityException e) {</span>
+<span class="nc" id="L173">      throw new JCombException(</span>
+<span class="nc" id="L174">          &quot;For Jcomb to work, the test class has to have an accessable empty constructor&quot;);</span>
+    }
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

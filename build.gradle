@@ -1,0 +1,88 @@
+
+
+plugins {
+    id 'java-library'
+    id 'eclipse-wtp'
+    id 'maven'
+    id 'maven-publish'
+    id "com.jfrog.bintray" version "1.7.3"
+    id "com.github.hierynomus.license" version "0.15.0"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    
+    implementation 'com.google.guava:guava:23.0'
+    api 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+    
+    testImplementation 'org.hamcrest:hamcrest-library:2.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.5.2'
+    testImplementation "org.mockito:mockito-core:2.+"
+}
+
+repositories {
+    jcenter()
+}
+
+license{
+	header = file('licenseheader.txt')
+	ext.year = '2019'
+	ext.name = 'Noah Zuch'
+	ext.email = 'noahz97@gmail.com'
+}
+
+//Publication
+
+task javadocJar(type: Jar) {
+    from javadoc.destinationDir
+        archiveClassifier = 'javadoc'  
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+group = 'com.github.noahzuch'
+version = '1.0'
+
+publishing {
+    publications {
+        JComb(MavenPublication) {
+        	artifactId="jcomb"
+            from components.java
+            
+            artifact javadocJar
+            artifact sourcesJar
+            
+            pom {
+                name = 'JComb'
+                description = 'An extension for integrating automated combinatorial testing in JUnit'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'noahz'
+                        name = 'Noah Zuch'
+                        email = 'noahz97@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = 'myRepo'
+            url = "file://${buildDir}/repo"
+        }
+    }
+}
+

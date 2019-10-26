@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>StandardJCombContext.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testSingleAdd (29.05.2019 13:08:27)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core</a> &gt; <span class="el_source">StandardJCombContext.java</span></div><h1>StandardJCombContext.java</h1><pre class="source lang-java linenums">package jcomb.core;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import jcomb.core.constraint.Constraint;
+import jcomb.core.parameter.Domain;
+
+/**
+ * The default implementation of an JCombContext.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class StandardJCombContext implements JCombContext {
+
+  private List&lt;Domain&gt; parameters;
+  private List&lt;InstanceDependent&gt; instanceDependant;
+  private Map&lt;Integer, Constraint&gt; constraints;
+  private Map&lt;Integer, Domain&gt; seeds;
+
+
+
+<span class="nc" id="L27">  public StandardJCombContext() {</span>
+<span class="nc" id="L28">    parameters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L29">    constraints = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L30">    seeds = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L31">  }</span>
+
+
+
+  @Override
+  public Map&lt;Integer, Constraint&gt; getConstraints() {
+<span class="nc" id="L37">    return constraints;</span>
+  }
+
+
+
+  @Override
+  public Domain getParameter(int index) {
+<span class="nc" id="L44">    return parameters.get(index);</span>
+  }
+
+
+
+  @Override
+  public int getParameterCount() {
+<span class="nc" id="L51">    return parameters.size();</span>
+  }
+
+
+
+  public void setAlsoIncludes(Map&lt;Integer, Domain&gt; alsoIncludes) {
+    // this.alsoIncludes = alsoIncludes;
+<span class="nc" id="L58">  }</span>
+
+
+
+  public void setConstraints(Map&lt;Integer, Constraint&gt; constraints) {
+<span class="nc" id="L63">    this.constraints = constraints;</span>
+<span class="nc" id="L64">  }</span>
+
+
+
+  public Map&lt;Integer, Domain&gt; getAlsoIncludesMap() {
+<span class="nc" id="L69">    return seeds;</span>
+  }
+
+
+
+  public Map&lt;Integer, Constraint&gt; getConstraintsMap() {
+<span class="nc" id="L75">    return constraints;</span>
+  }
+
+
+
+  @Override
+  public void initializeForInstance(Object currentTestInstance) {
+<span class="nc" id="L82">    instanceDependant.forEach(obj -&gt; obj.initializeForInstance(currentTestInstance));</span>
+<span class="nc" id="L83">  }</span>
+
+
+
+  public void setParameters(List&lt;Domain&gt; parameters) {
+<span class="nc" id="L88">    this.parameters = parameters;</span>
+<span class="nc" id="L89">    this.instanceDependant = parameters.stream()</span>
+<span class="nc" id="L90">        .filter(obj -&gt; obj instanceof InstanceDependent)</span>
+<span class="nc" id="L91">        .map(obj -&gt; (InstanceDependent) obj).collect(Collectors.toList());</span>
+<span class="nc" id="L92">  }</span>
+
+
+
+  // @Override
+  // public int resolveParameterIndex(int parameterIndex) {
+  // return parameterIndex;
+  // }
+
+
+
+  @Override
+  public Collection&lt;int[]&gt; getSeeds() {
+<span class="nc" id="L105">    return null;// seeds.values();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testSingleAdd (29.05.2019 13:08:27)</div></body></html>

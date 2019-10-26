@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>JCombCore.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core</a> &gt; <span class="el_source">JCombCore.java</span></div><h1>JCombCore.java</h1><pre class="source lang-java linenums">package jcomb.core;
+
+import jcomb.core.constraint.ConstraintHandler;
+import jcomb.core.constraint.tree.CheckTree;
+import jcomb.core.ipog.IpogTestGenerator;
+import jcomb.core.oa.OrthogonalArrayGenerator;
+
+/**
+ * A factory class to create {@link TestInputGenerator}s based on the supplied information.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class JCombCore {
+
+  private JCombCore() {
+
+  }
+
+
+
+  /**
+   * Creates a TestInputGenerator based on the supplied parameters.
+   * 
+   * @param algorithm The algorithm to use.
+   * @param context The JCombContext for the current test.
+   * @return a TestInputGenerator applicable for the current test.
+   */
+  public static TestInputGenerator createGenerator(Algorithm algorithm, JCombContext context) {
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">    if (context.getParameterCount() == 0) {</span>
+<span class="nc" id="L31">      throw new JCombException(&quot;No parameters supplied&quot;);</span>
+    }
+
+<span class="pc bpc" id="L34" title="3 of 4 branches missed.">    switch (algorithm) {</span>
+      case ANY:
+<span class="fc" id="L36">        return createAnyGenerator(algorithm, context);</span>
+      case OA:
+<span class="nc" id="L38">        return createOAGenerator(algorithm, context);</span>
+      case IPOG:
+<span class="nc" id="L40">        return createIPOGGenerator(algorithm, context);</span>
+      default:
+<span class="nc" id="L42">        throw new IllegalArgumentException(&quot;Unrecognized algorithm type&quot;);</span>
+    }
+  }
+
+
+
+  private static TestInputGenerator createIPOGGenerator(Algorithm algorithm, JCombContext context) {
+<span class="fc" id="L49">    int[] domainSizes = createDomainSizesFromContext(context);</span>
+<span class="fc" id="L50">    ConstraintHandler constraintHandler = createConstraintHandlerFromContext(context);</span>
+<span class="fc" id="L51">    return new IpogTestGenerator(2, domainSizes, constraintHandler);</span>
+  }
+  
+  private static int[] createDomainSizesFromContext(JCombContext context) {
+<span class="fc" id="L55">    int[] domainSizes = new int[context.getParameterCount()];</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    for (int i = 0; i &lt; domainSizes.length; i++) {</span>
+<span class="fc" id="L57">      domainSizes[i] = context.getParameter(i).getSize();</span>
+    }
+<span class="fc" id="L59">    return domainSizes;</span>
+  }
+  
+  private static ConstraintHandler createConstraintHandlerFromContext(JCombContext context) {
+    ConstraintHandler constraintHandler;
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    if (context.getConstraints().size() &gt; 0) {</span>
+<span class="nc" id="L65">      constraintHandler = new CheckTree(context);</span>
+<span class="nc" id="L66">    } else {</span>
+<span class="fc" id="L67">      constraintHandler = ConstraintHandler.getDefaultConstraintHandler();</span>
+    }
+<span class="fc" id="L69">    return constraintHandler;</span>
+  }
+
+
+
+  // private void sortForHighestDomainSize(int[] parameterSorting, int[] domainSizes) {
+  // int n = domainSizes.length;
+  // for (int i = 0; i &lt; n - 1; i++) {
+  // for (int j = 0; j &lt; n - i - 1; j++) {
+  // if (domainSizes[j] &lt; domainSizes[j + 1]) {
+  // swap(domainSizes,j,j+1);
+  // swap(parameterSorting,j,j+1);
+  // }
+  // }
+  // }
+  // }
+  //
+  //
+  //
+  // private void swap(int[] array, int j, int k) {
+  // int temp = array[j];
+  // array[j] = array[k];
+  // array[k] = temp;
+  // }
+
+
+
+  private static TestInputGenerator createOAGenerator(Algorithm algorithm, JCombContext context) {
+<span class="fc" id="L97">    int valueCount = context.getParameter(0).getSize();</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">    for (int k = 1; k &lt; context.getParameterCount(); k++) {</span>
+<span class="fc" id="L99">      int tempValueCount = context.getParameter(k).getSize();</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">      if (tempValueCount != valueCount) {</span>
+<span class="fc" id="L101">        throw new JCombException(</span>
+<span class="fc" id="L102">            &quot;Algorithm Orhtogonal Array needs all parameters to have the same number of possible values.&quot;);</span>
+      }
+    }
+    try {
+<span class="nc" id="L106">      return new OrthogonalArrayGenerator(context.getParameterCount(), valueCount);</span>
+<span class="nc" id="L107">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L108">      throw new JCombException(e);</span>
+    }
+  }
+
+
+
+  private static TestInputGenerator createAnyGenerator(Algorithm algorithm, JCombContext context) {
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    if (context.getParameterCount() == 1) {</span>
+<span class="nc" id="L116">      return new SingleParameterInputGenerator(context);</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">    } else if (context.getConstraints().size() &gt; 0) {</span>
+<span class="nc" id="L118">      return createIPOGGenerator(algorithm, context);</span>
+    } else {
+      try {
+<span class="nc" id="L121">        return createOAGenerator(algorithm, context);</span>
+<span class="fc" id="L122">      } catch (JCombException e) {</span>
+        //fallback
+<span class="fc" id="L124">        return createIPOGGenerator(algorithm, context);</span>
+      }
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

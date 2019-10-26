@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>OccurenceTracker.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.ipog</a> &gt; <span class="el_source">OccurenceTracker.java</span></div><h1>OccurenceTracker.java</h1><pre class="source lang-java linenums">package jcomb.core.ipog;
+
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+public class OccurenceTracker implements IOccurenceTracker {
+
+  private ParameterValueOccurence[] occurences;
+
+<span class="fc" id="L11">  public OccurenceTracker(int[] domainSizes) {</span>
+<span class="fc" id="L12">    occurences = new ParameterValueOccurence[domainSizes.length];</span>
+<span class="fc bfc" id="L13" title="All 2 branches covered.">    for (int i = 0; i &lt; domainSizes.length; i++) {</span>
+<span class="fc" id="L14">      ParameterValueOccurence pOcc = new ParameterValueOccurence();</span>
+<span class="fc" id="L15">      pOcc.occurenceNodes = new OccurenceNode[domainSizes[i]];</span>
+<span class="fc" id="L16">      pOcc.occurences = new TreeSet&lt;&gt;();</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">      for (int j = 0; j &lt; domainSizes[i]; j++) {</span>
+<span class="fc" id="L18">        OccurenceNode node = new OccurenceNode(j);</span>
+<span class="fc" id="L19">        pOcc.occurenceNodes[j] = node;</span>
+<span class="fc" id="L20">        pOcc.occurences.add(node);</span>
+      }
+<span class="fc" id="L22">      occurences[i] = pOcc;</span>
+    }
+<span class="fc" id="L24">  }</span>
+
+
+
+  /* (non-Javadoc)
+   * @see jcomb.core.ipog.IOccurenceTracker#getLeastFrequentValue(int)
+   */
+  @Override
+  public int getLeastFrequentValue(int parameterIndex) {
+<span class="nc" id="L33">    return occurences[parameterIndex].occurences.first().value;</span>
+  }
+
+
+
+  /* (non-Javadoc)
+   * @see jcomb.core.ipog.IOccurenceTracker#addUsedValue(int, int)
+   */
+  @Override
+  public void addUsedValue(int parameterIndex, int value) {
+<span class="fc" id="L43">    ParameterValueOccurence pOcc = occurences[parameterIndex];</span>
+<span class="fc" id="L44">    OccurenceNode node = pOcc.occurenceNodes[value];</span>
+<span class="fc" id="L45">    pOcc.occurences.remove(node);</span>
+<span class="fc" id="L46">    node.occurence++;</span>
+<span class="fc" id="L47">    pOcc.occurences.add(node);</span>
+<span class="fc" id="L48">  }</span>
+
+
+
+  public Iterator&lt;Integer&gt; getOccurenceIterator(int parameterIndex) {
+<span class="nc" id="L53">    return new Tools.ConvertedIterator&lt;OccurenceNode, Integer&gt;(</span>
+<span class="nc" id="L54">        occurences[parameterIndex].occurences.iterator(), OccurenceNode::getValue);</span>
+  }
+
+  private static class ParameterValueOccurence {
+
+    private OccurenceNode[] occurenceNodes;
+    private SortedSet&lt;OccurenceNode&gt; occurences;
+  }
+
+  private static class OccurenceNode implements Comparable&lt;OccurenceNode&gt;{
+
+<span class="fc" id="L65">    public OccurenceNode(int value) {</span>
+<span class="fc" id="L66">      occurence = 0;</span>
+<span class="fc" id="L67">      this.value = value;</span>
+<span class="fc" id="L68">    }</span>
+
+    private int value;
+    private int occurence;
+
+
+
+    public int getValue() {
+<span class="nc" id="L76">      return value;</span>
+    }
+
+    
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L83">      final int prime = 31;</span>
+<span class="nc" id="L84">      int result = 1;</span>
+<span class="nc" id="L85">      result = prime * result + value;</span>
+<span class="nc" id="L86">      return result;</span>
+    }
+
+
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L93" title="All 2 branches missed.">      if (this == obj)</span>
+<span class="nc" id="L94">        return true;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">      if (obj == null)</span>
+<span class="nc" id="L96">        return false;</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">      if (getClass() != obj.getClass())</span>
+<span class="nc" id="L98">        return false;</span>
+<span class="nc" id="L99">      OccurenceNode other = (OccurenceNode) obj;</span>
+<span class="nc bnc" id="L100" title="All 4 branches missed.">      if (value != other.value || occurence != other.occurence)</span>
+<span class="nc" id="L101">        return false;</span>
+<span class="nc" id="L102">      return true;</span>
+    }
+
+
+
+    @Override
+    public int compareTo(OccurenceNode o) {
+<span class="fc" id="L109">      int compareResult = Integer.compare(occurence, o.occurence);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">      if(compareResult==0) {</span>
+<span class="fc" id="L111">        compareResult = Integer.compare(value, o.value);</span>
+      }
+<span class="fc" id="L113">      return compareResult;</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

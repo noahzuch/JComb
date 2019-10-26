@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>ParameterReorder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.partial</a> &gt; <span class="el_source">ParameterReorder.java</span></div><h1>ParameterReorder.java</h1><pre class="source lang-java linenums">package jcomb.core.partial;
+
+
+public class ParameterReorder {
+
+  private Integer[] mappingOldToNewIndizes;
+  private int[] mappingNewToOldIndizes;
+
+
+
+<span class="fc" id="L11">  public ParameterReorder(int[] mappingNewToOldIndizes, int oldParamterCount) {</span>
+<span class="fc" id="L12">    this.mappingNewToOldIndizes = mappingNewToOldIndizes;</span>
+<span class="fc" id="L13">    mappingOldToNewIndizes = new Integer[oldParamterCount];</span>
+<span class="fc bfc" id="L14" title="All 2 branches covered.">    for (int newIndex = 0; newIndex &lt; mappingNewToOldIndizes.length; newIndex++) {</span>
+<span class="fc" id="L15">      int oldIndex = mappingNewToOldIndizes[newIndex];</span>
+<span class="pc bpc" id="L16" title="2 of 4 branches missed.">      if (oldIndex&gt;=0 &amp;&amp; oldIndex &lt; oldParamterCount) {</span>
+<span class="fc" id="L17">        mappingOldToNewIndizes[oldIndex] = newIndex;</span>
+<span class="fc" id="L18">      } else {</span>
+<span class="nc" id="L19">        throw new IllegalArgumentException(</span>
+<span class="nc" id="L20">            &quot;Given mapping contains the undefined old parameter: &quot; + oldIndex);</span>
+      }
+    }
+<span class="fc" id="L23">  }</span>
+
+
+
+  public boolean isLegalNewParam(int newIndex) {
+<span class="pc bpc" id="L28" title="2 of 4 branches missed.">    return newIndex &gt;= 0 &amp;&amp; newIndex &lt; mappingNewToOldIndizes.length;</span>
+  }
+
+
+
+  public boolean isLegalOldParam(int oldIndex) {
+<span class="nc bnc" id="L34" title="All 4 branches missed.">    return oldIndex &gt;= 0 &amp;&amp; oldIndex &lt; mappingOldToNewIndizes.length;</span>
+  }
+
+
+
+  public boolean containsReorderForOldParam(int oldIndex) {
+<span class="nc bnc" id="L40" title="All 4 branches missed.">    return isLegalOldParam(oldIndex) &amp;&amp; mappingOldToNewIndizes[oldIndex] != null;</span>
+  }
+
+
+
+  public int getNewParamIndexFromOld(int oldIndex) {
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    if (!containsReorderForOldParam(oldIndex)) {</span>
+<span class="nc" id="L47">      throw new IllegalArgumentException(</span>
+<span class="nc" id="L48">          &quot;Given old Parameter '&quot; + oldIndex + &quot;' is not reordered in this ParameterReorder&quot;);</span>
+    }
+<span class="nc" id="L50">    return mappingOldToNewIndizes[oldIndex];</span>
+  }
+
+
+
+  public int getOldParamIndexFromNew(int newIndex) {
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">    if (!isLegalNewParam(newIndex)) {</span>
+<span class="nc" id="L57">      throw new IllegalArgumentException(</span>
+<span class="nc" id="L58">          &quot;Given Index '&quot; + newIndex + &quot;' does not exist in the current reordering&quot;);</span>
+    }
+<span class="fc" id="L60">    return mappingNewToOldIndizes[newIndex];</span>
+  }
+
+
+
+  public int getReorderedParameterCount() {
+<span class="fc" id="L66">    return mappingNewToOldIndizes.length;</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

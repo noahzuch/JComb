@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>JCombParameterResolver.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.junitjupiter</a> &gt; <span class="el_source">JCombParameterResolver.java</span></div><h1>JCombParameterResolver.java</h1><pre class="source lang-java linenums">package jcomb.junitjupiter;
+
+import java.util.Optional;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
+import jcomb.annotations.ValueIndex;
+import jcomb.core.JCombContext;
+
+/**
+ * A {@link ParameterResolver} implementation, that is used by JComb to resolve parameters via a
+ * specific {@link InputCombination} generated previously.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class JCombParameterResolver implements ParameterResolver {
+
+  private InputCombination combination;
+  private JCombContext context;
+
+  private int currentParameter;
+
+
+
+  /**
+   * Creates a new {@link JCombParameterResolver} for the given parameters.
+   * 
+   * @param context The {@link JCombContext} of the current test instance.
+   * @param combination The {@link InputCombination} used, to resolve parameters.
+   */
+<span class="fc" id="L33">  public JCombParameterResolver(JCombContext context, InputCombination combination) {</span>
+<span class="fc" id="L34">    this.combination = combination;</span>
+<span class="fc" id="L35">    this.context = context;</span>
+<span class="fc" id="L36">    currentParameter = 0;</span>
+<span class="fc" id="L37">  }</span>
+
+
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean supportsParameter(ParameterContext parameterContext,
+      ExtensionContext extensionContext) throws ParameterResolutionException {
+<span class="pc bpc" id="L47" title="3 of 4 branches missed.">    if (currentParameter &lt; context.getParameterCount() || parameterContext.isAnnotated(ValueIndex.class)) {</span>
+<span class="fc" id="L48">      combination.initializeForInstance(extensionContext.getRequiredTestInstance());</span>
+<span class="fc" id="L49">      return true;</span>
+    }
+<span class="nc" id="L51">    return false;</span>
+  }
+
+
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object resolveParameter(ParameterContext parameterContext,
+      ExtensionContext extensionContext) throws ParameterResolutionException {
+<span class="fc" id="L62">    Optional&lt;ValueIndex&gt; valueIndexOpt = parameterContext.findAnnotation(ValueIndex.class);</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">    if (valueIndexOpt.isPresent()) {</span>
+<span class="nc" id="L64">      int paramIndex = valueIndexOpt.get().value();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">      if (parameterContext.getParameter().getType() != int.class</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">          &amp;&amp; parameterContext.getParameter().getType() != Integer.class) {</span>
+<span class="nc" id="L67">        throw new ParameterResolutionException(</span>
+<span class="nc" id="L68">            &quot;The annotation ValueIndex can only be used with parameter types int or Integer&quot;);</span>
+      } else {
+<span class="nc" id="L70">        return combination.getValueIndexForParameter(paramIndex);</span>
+      }
+    } else {
+<span class="fc" id="L73">      Object parameterInstance = combination.getValueForParameter(currentParameter++);</span>
+<span class="fc" id="L74">      return parameterInstance;</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

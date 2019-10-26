@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationHandler.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.annotations</a> &gt; <span class="el_source">AnnotationHandler.java</span></div><h1>AnnotationHandler.java</h1><pre class="source lang-java linenums">package jcomb.annotations;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import jcomb.core.JCombContext;
+import jcomb.core.StandardJCombContext;
+import jcomb.core.constraint.MethodConstraint;
+import jcomb.core.parameter.FieldInputParameter;
+import jcomb.core.parameter.Domain;
+import jcomb.core.parameter.MethodInputParameter;
+
+/**
+ * This class implements annotation scanning for jcomb.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class AnnotationHandler {
+
+  private Map&lt;Integer, Domain&gt; parameters;
+  private Class&lt;?&gt; classToScan;
+  private StandardJCombContext context;
+
+
+
+  /**
+   * Creates a new instance for scanning in the supplied class.
+   * 
+   * @param classToScan The Class to scan annotations in.
+   */
+<span class="fc" id="L36">  public AnnotationHandler(Class&lt;?&gt; classToScan) {</span>
+<span class="fc" id="L37">    this.classToScan = classToScan;</span>
+<span class="fc" id="L38">    context = new StandardJCombContext();</span>
+<span class="fc" id="L39">    parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L40">  }</span>
+
+
+
+  /**
+   * Scans the class for relevant annotations
+   */
+  public JCombContext scan(Object classInstance) {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    for (Field field : classToScan.getDeclaredFields()) {</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">      for (Annotation annotation : field.getAnnotations()) {</span>
+<span class="fc" id="L50">        scanField(classInstance, field, annotation);</span>
+      }
+    }
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    for (Method method : classToScan.getDeclaredMethods()) {</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">      for (Annotation annotation : method.getAnnotations()) {</span>
+<span class="fc" id="L55">        scanMethod(classInstance, method, annotation);</span>
+      }
+    }
+<span class="fc" id="L58">    context.setParameters(parameters.entrySet().stream().sorted(Entry.comparingByKey())</span>
+<span class="fc" id="L59">        .map(Entry::getValue).collect(Collectors.toList()));</span>
+<span class="fc" id="L60">    return context;</span>
+  }
+
+
+
+  private void scanMethod(Object classInstance, Method method, Annotation annotation) {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    if (annotation instanceof Parameter) {</span>
+<span class="nc" id="L67">      addParameterMethodToParameters(classInstance, (Parameter) annotation, method);</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">    } else if (annotation instanceof Constraint) {</span>
+<span class="nc" id="L69">      addConstraintMethod(classInstance, (Constraint) annotation, method);</span>
+    }
+<span class="fc" id="L71">  }</span>
+
+
+
+  private void scanField(Object classInstance, Field field, Annotation annotation) {
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">    if (annotation instanceof Parameter) {</span>
+<span class="fc" id="L77">      addParameterFieldToParameters(classInstance, (Parameter) annotation, field);</span>
+<span class="pc bnc" id="L78" title="All 2 branches missed.">    } else if (annotation instanceof Constraint) {</span>
+<span class="nc" id="L79">      addConstraintField(classInstance, (Constraint) annotation, field);</span>
+    }
+<span class="fc" id="L81">  }</span>
+
+
+
+  private void addConstraintField(Object classInstance, Constraint constraint, Field field) {
+    // TODO revisit constraints
+    // context.getConstraintsMap().put(constraint.testId(), new FieldConstraint(field));
+<span class="nc" id="L88">  }</span>
+
+
+
+  private void addConstraintMethod(Object classInstance, Constraint constraint, Method method) {
+<span class="nc" id="L93">    context.getConstraintsMap().put(constraint.id(),</span>
+<span class="nc" id="L94">        new MethodConstraint(constraint.parameters(), method));</span>
+<span class="nc" id="L95">  }</span>
+
+
+
+  private void addParameterFieldToParameters(Object classInstance, Parameter parameter,
+      Field field) {
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">    if (parameters.containsKey(parameter.value())) {</span>
+<span class="nc" id="L102">      throw new RuntimeException();</span>
+    } else {
+<span class="fc" id="L104">      FieldInputParameter inputParameter = new FieldInputParameter(field, classInstance);</span>
+<span class="fc" id="L105">      parameters.put(parameter.value(), inputParameter);</span>
+    }
+<span class="fc" id="L107">  }</span>
+
+
+
+  private void addParameterMethodToParameters(Object classInstance, Parameter parameter,
+      Method method) {
+<span class="nc bnc" id="L113" title="All 2 branches missed.">    if (parameters.containsKey(parameter.value())) {</span>
+<span class="nc" id="L114">      throw new RuntimeException();</span>
+    } else {
+<span class="nc" id="L116">      MethodInputParameter inputParameter = new MethodInputParameter(method, classInstance);</span>
+<span class="nc" id="L117">      parameters.put(parameter.value(), inputParameter);</span>
+    }
+<span class="nc" id="L119">  }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>

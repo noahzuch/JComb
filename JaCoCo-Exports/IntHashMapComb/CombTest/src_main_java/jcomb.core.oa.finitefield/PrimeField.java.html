@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PrimeField.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</a> &gt; <a href="../../index.html" class="el_group">CombTest</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">jcomb.core.oa.finitefield</a> &gt; <span class="el_source">PrimeField.java</span></div><h1>PrimeField.java</h1><pre class="source lang-java linenums">package jcomb.core.oa.finitefield;
+
+import jcomb.core.oa.Tools;
+
+/**
+ * A FiniteField where the number of values is a prime.
+ * 
+ * @author Noah Zuch
+ *
+ */
+public class PrimeField implements FiniteField {
+
+  int prime;
+
+  /**
+   * Creates a new prime field with the given number of values.
+   * 
+   * @param prime the size of the field. Has to be a prime number.
+   */
+<span class="nc" id="L20">  public PrimeField(int prime) {</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">    if (!Tools.isPrime(prime))</span>
+<span class="nc" id="L22">      throw new IllegalArgumentException(&quot;supplied number is not a prime&quot;);</span>
+<span class="nc" id="L23">    this.prime = prime;</span>
+<span class="nc" id="L24">  }</span>
+
+  @Override
+  public int subtract(int a, int b) {
+<span class="nc" id="L28">    return (a + addInvers(b)) % prime;</span>
+  }
+
+  @Override
+  public int multiply(int a, int b) {
+<span class="nc" id="L33">    return (a * b) % prime;</span>
+  }
+
+  @Override
+  public int multInvers(int a) {
+<span class="nc bnc" id="L38" title="All 2 branches missed.">    if (a == 0)</span>
+<span class="nc" id="L39">      throw new ArithmeticException(&quot;No multiplicative invers exists for zero&quot;);</span>
+
+    // TODO no for loop, there should be a better solution
+<span class="nc bnc" id="L42" title="All 2 branches missed.">    for (int i = 1; i &lt; prime; i++) {</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">      if (multiply(a, i) == 1) {</span>
+<span class="nc" id="L44">        return i;</span>
+      }
+    }
+<span class="nc" id="L47">    throw new ArithmeticException(</span>
+<span class="nc" id="L48">        &quot;No multiplicative invers found in prime field &quot; + prime + &quot; for number &quot; + a);</span>
+  }
+
+  @Override
+  public int divide(int a, int b) {
+<span class="nc" id="L53">    return (a * multInvers(b)) % prime;</span>
+  }
+
+  @Override
+  public int addInvers(int a) {
+<span class="nc" id="L58">    return prime - a;</span>
+  }
+
+  @Override
+  public int add(int a, int b) {
+<span class="nc" id="L63">    return (a + b) % prime;</span>
+  }
+
+  @Override
+  public int size() {
+<span class="nc" id="L68">    return prime;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>HashMapTest.testAdd(int, float, boolean) (29.05.2019 13:02:31)</div></body></html>
