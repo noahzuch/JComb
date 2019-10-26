@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.junitjupiter;
 
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
@@ -34,30 +33,31 @@ import com.github.noahzuch.jcomb.core.JCombContext;
  * An Example of a testclass using JComb:
  * 
  * <pre>
- * {@code
- * @ExtendWith(CombinationExtension.class)
- * class JCombTest {
+ * &#64;ExtendWith(JCombExtension.class)
+ * class JCombTest &#123;
  * 
- *     @Parameter(0)
+ *     &#64;Parameter(0)
  *     Values parameter1 = new Values("Hello", "world", "!");
  * 
- *     @Parameter(1)
+ *     &#64;Parameter(1)
  *     Values parameter2 = new Values(1, 2, 3);
  * 
- *     @Parameter(2)
- *     Values getParameter3() {
+ *     &#64;Parameter(2)
+ *     Values getParameter3() &#123;
  *         return new Values(3.56d, 2.572d, 91234d);
- *     }
+ *     &#125;
  * 
  *     &#64;JCombTest
- *     void test(String a, int b, Double dd) { ... }
- * }
+ *     void test(String a, int b, Double dd) &#123;
+ *         ...
+ *     &#125;
+ * &#125;
+ * </pre>
  * 
- *
  * See the javadoc for {@link Parameter} and {@link JCombTest} for more details about each
  * annotation.
  * 
- * @author Noah Zuch
+ * @author Noah
  * 
  */
 public class JCombExtension implements TestTemplateInvocationContextProvider {

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.annotations;
 
 import static java.lang.annotation.ElementType.METHOD;
@@ -90,21 +89,21 @@ public @interface JCombTest {
    * If only a subset of constraints should be used for this test method, they can be defined here
    * as an array of there ids.
    * 
-   * @return
+   * @return The list of constraints that should be used.
    */
   int[] constraints() default {};
 
   /**
    * Defines the strength of the combinatorial test. Default is 2.
    * 
-   * @return
+   * @return The strength of the combinatorial test
    */
   int strength() default 2;
 
   /**
-   * If no constraint should be used set ignoreConstraints to <code>true</code>.
+   * If no constraint should be used set ignoreConstraints to true.
    * 
-   * @return
+   * @return true if none of the defined constraints should be used.
    */
   boolean ignoreConstraints() default false;
 }

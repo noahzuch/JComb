@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.generator.oa;
 
 import java.util.ArrayList;
@@ -38,6 +37,8 @@ public class OrthogonalArrayGenerator implements TestGenerator {
   /**
    * Creates a new generator. The supplied context has to follow the restrictions described in
    * {@link Algorithm#OA}.
+   * @param parameterCount The number of parameters.
+   * @param valueCount  The number of values per parameter.
    * 
    * @throws JCombException if the orthogonal array construction is not possible for the supplied
    *         parameters.

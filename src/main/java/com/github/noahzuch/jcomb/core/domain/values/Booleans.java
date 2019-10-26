@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
+/**
+ * A Domain class to create boolean parameters.
+ * @author Noah
+ *
+ */
 public class Booleans extends Values {
 
+  /**
+   * Creates a new boolean domain.
+   */
   public Booleans() {
     super(true, false);
   }

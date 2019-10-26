@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core;
 
 /**
@@ -56,6 +55,7 @@ public class JCombException extends RuntimeException {
   /**
    * Creates a new exception object.
    * 
+   * @param message The message for this exception.
    * @param cause The cause of this exception
    */
   public JCombException(String message, Throwable cause) {

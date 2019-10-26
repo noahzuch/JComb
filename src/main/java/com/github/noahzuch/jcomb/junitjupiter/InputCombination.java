@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.junitjupiter;
 
 import com.github.noahzuch.jcomb.core.InstanceDependent;
@@ -54,10 +53,19 @@ public class InputCombination implements InstanceDependent {
     return context.getParameter(paramIndex).getValueAt(combination[paramIndex]);
   }
 
+  /**
+   * Returns the index of the used value in this InputCombination for a given parameter index.
+   * @param paramIndex The parameter index to get the used value from.
+   * @return The used value index.
+   */
   public int getValueIndexForParameter(int paramIndex) {
     return combination[paramIndex];
   }
 
+  /**
+   * Returns the number of parameters in this InputCombination.
+   * @return The number of parameters in this InputCombination.
+   */
   public int size() {
     return combination.length;
   }

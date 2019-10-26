@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
+/**
+ * A Domain class to create long parameters.
+ * @author Noah
+ *
+ */
 public class Longs extends Values {
 
+  /**
+   * Creates a new long domain with the given values.
+   * @param ls The values of this domain
+   */
   public Longs(Long... ls) {
     super(ls);
   }

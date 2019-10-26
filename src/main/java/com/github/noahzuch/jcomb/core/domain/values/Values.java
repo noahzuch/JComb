@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
 import java.util.Arrays;
@@ -33,6 +32,7 @@ public class Values extends Domain {
    * Creates a new Values object containing the supplied objects.
    * 
    * @param values The objects that should be contained in this Values object.
+   * @param <T> The type of the values in this domain.
    */
   @SafeVarargs
   public <T> Values(T... values) {
@@ -46,6 +46,7 @@ public class Values extends Domain {
    * Creates a new Values object via the given supplier objects.
    * 
    * @param suppliers The suppliers that should be used to get the values from.
+   * @param <T> The type of the values in this domain.
    */
   @SafeVarargs
   public <T> Values(Supplier<T>... suppliers) {
@@ -59,6 +60,7 @@ public class Values extends Domain {
    * Creates a new Values object containing all values of the supplied enum.
    * 
    * @param enumClass The enum class from which the values should be saved.
+   * @param <E> The type of the enum to create the domain from.
    */
   public <E extends Enum<E>> Values(Class<E> enumClass) {
     values = enumClass.getEnumConstants();

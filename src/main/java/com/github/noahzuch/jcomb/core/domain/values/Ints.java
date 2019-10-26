@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
+/**
+ * A Domain class to create int parameters.
+ * @author Noah
+ *
+ */
 public class Ints extends Values {
 
+  /**
+   * Creates a new int domain with the given values.
+   * @param is The values of this domain
+   */
   public Ints(Integer... is) {
     super(is);
   }

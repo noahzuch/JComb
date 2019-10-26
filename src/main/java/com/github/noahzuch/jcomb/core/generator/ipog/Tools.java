@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.generator.ipog;
 
 import java.util.Arrays;
 
+/**
+ * A Tools class for the IPOG algorithm
+ * @author Noah
+ *
+ */
 public final class Tools {
 
   private Tools() {
@@ -79,13 +83,14 @@ public final class Tools {
   }
 
   /**
-   * Fills the given test with values of the tupel defined by index and an ascending order of
+   * Creates a new test with values of the tupel defined by index and an ascending order of
    * parameters. Every other value is -1.
    * 
    * @param domainSizes The sizes of the parameter domains.
    * @param index The index representation of the tupel.
    * @param parameterOffset The first parameter to fill
    * @param parameterCount The amount of parameters to fill
+   * @return a new test as an int array.
    */
   public static int[] generateNewTest(int[] domainSizes, int index, int parameterOffset,
       int parameterCount) {
@@ -102,7 +107,7 @@ public final class Tools {
    * @param domainSizes The sizes of the parameter domains
    * @param index The index representation of the tupel.
    * @param paramComb The combination of parameters for the given value index
-   * @return
+   * @return a new test as an int array.
    */
   public static int[] generateNewTest(int[] domainSizes, int index, int[] paramComb) {
     int[] test = new int[domainSizes.length];

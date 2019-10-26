@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.noahzuch.jcomb.core.domain.values;
 
+/**
+ * A Domain class to create float parameters.
+ * @author Noah
+ *
+ */
 public class Floats extends Values {
 
+  /**
+   * Creates a new float domain with the given values.
+   * @param fs The values of this domain.
+   */
   public Floats(Float... fs) {
     super(fs);
   }
