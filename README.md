@@ -90,7 +90,7 @@ JComb is available on JCenter. Get it for your Maven or Gradle project:
 <dependency>
     <groupId>com.noahzuch.jcomb</groupId>
     <artifactId>JComb</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -98,7 +98,7 @@ JComb is available on JCenter. Get it for your Maven or Gradle project:
 or
 
 ```gradle
-testImplementation 'com.noahzuch.jcomb:JComb:1.0'
+testImplementation 'com.noahzuch.jcomb:JComb:1.0.0'
 ```
 
 <!-- USAGE EXAMPLES -->
