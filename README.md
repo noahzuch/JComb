@@ -71,9 +71,9 @@ class CombTest {
     static Values stringParameter = new Values("1", "2", "3");
     
     @Parameter(2)
-    static Values objectParameter = new Values(
-    Arrays.asList(new int[]{1,2,3}),
-    Collections.EMPTY_LIST);
+    static Values listParameter = new Values(
+    Arrays.asList(new int[]{1,2,3}), //a list object as the first parameter
+    Collections.EMPTY_LIST); //an empty list as the second parameter
 
     //Define a testmethod
     @JCombTest()
@@ -88,8 +88,8 @@ class CombTest {
 JComb is available on JCenter. Get it for your Maven or Gradle project:
 ```maven
 <dependency>
-    <groupId>com.noahzuch.jcomb</groupId>
-    <artifactId>JComb</artifactId>
+    <groupId>com.github.noahzuch.jcomb</groupId>
+    <artifactId>jcomb</artifactId>
     <version>1.0.0</version>
     <scope>test</scope>
 </dependency>
@@ -98,7 +98,7 @@ JComb is available on JCenter. Get it for your Maven or Gradle project:
 or
 
 ```gradle
-testImplementation 'com.noahzuch.jcomb:JComb:1.0.0'
+testImplementation 'com.github.noahzuch.jcomb:jcomb:1.0.0'
 ```
 
 <!-- USAGE EXAMPLES -->
