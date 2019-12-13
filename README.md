@@ -72,8 +72,8 @@ class CombTest {
     
     @Parameter(2)
     static Values listParameter = new Values(
-    Arrays.asList(new int[]{1,2,3}), //a list object as the first parameter
-    Collections.EMPTY_LIST); //an empty list as the second parameter
+    Arrays.asList(1,2,3), 
+    Collections.EMPTY_LIST);
 
     //Define a testmethod
     @JCombTest()
